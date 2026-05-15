@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ══════════════════════════════════════════════
+       ✦ EDIT THESE META TAGS FOR EACH MODULE
+  ══════════════════════════════════════════════ -->
+  <title>POS Dashboard — Odoo Docs</title>
+  <meta name="description" content="Documentation for the POS Dashboard module." />
+  <!-- ══════════════════════════════════════════════ -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent:#7c3aed; --accent2:#06b6d4;
+      --radius:18px; --transition:0.35s cubic-bezier(.4,0,.2,1);
+    }
+    [data-theme="dark"]{
+      --bg:#0d0d14; --bg2:#13131f; --surface:rgba(255,255,255,0.05);
+      --surface2:rgba(255,255,255,0.08); --border:rgba(255,255,255,0.08);
+      --text:#f0f0ff; --text-muted:#8888aa; --shadow:0 8px 40px rgba(0,0,0,0.6);
+      --glow:rgba(124,58,237,0.35); --tag-bg:rgba(124,58,237,0.18);
+      --tag-text:#c4b5fd; --badge-bg:rgba(6,182,212,0.15); --badge-text:#67e8f9;
+      --code-bg:#1a1a2e;
+    }
+    [data-theme="light"]{
+      --bg:#f4f4fc; --bg2:#eaeaf5; --surface:#ffffff;
+      --surface2:#f0eeff; --border:rgba(0,0,0,0.08);
+      --text:#1a1a2e; --text-muted:#6b6b8a; --shadow:0 8px 40px rgba(100,80,200,0.12);
+      --glow:rgba(124,58,237,0.15); --tag-bg:rgba(124,58,237,0.1);
+      --tag-text:#6d28d9; --badge-bg:rgba(6,182,212,0.1); --badge-text:#0891b2;
+      --code-bg:#f0eeff;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background var(--transition),color var(--transition);}
+    a{color:var(--accent2);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+
+    /* Orbs */
+    .bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .bg-orbs span{position:absolute;border-radius:50%;filter:blur(100px);opacity:0.15;animation:drift 20s ease-in-out infinite alternate;}
+    .bg-orbs span:nth-child(1){width:500px;height:500px;background:var(--accent);top:-100px;left:-100px;}
+    .bg-orbs span:nth-child(2){width:350px;height:350px;background:var(--accent2);bottom:-80px;right:-60px;animation-duration:25s;}
+    @keyframes drift{from{transform:translate(0,0);}to{transform:translate(40px,30px);}}
+
+    /* Layout */
+    .wrapper{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 24px 80px;}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;padding:24px 0;}
+    .back-btn{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:0.85rem;font-weight:500;color:var(--text);cursor:pointer;transition:all var(--transition);text-decoration:none;}
+    .back-btn:hover{background:var(--surface2);text-decoration:none;box-shadow:0 0 14px var(--glow);}
+    #theme-toggle{background:var(--surface);border:1px solid var(--border);border-radius:50px;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:0.85rem;font-weight:500;color:var(--text);transition:all var(--transition);}
+    #theme-toggle:hover{background:var(--surface2);box-shadow:0 0 14px var(--glow);}
+    #theme-toggle .icon{transition:transform 0.5s;}
+    #theme-toggle:hover .icon{transform:rotate(20deg);}
+
+    /* Hero Card */
+    .hero-card{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius);padding:36px 32px;margin:8px 0 36px;
+      display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;
+      position:relative;overflow:hidden;
+    }
+    .hero-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      opacity:0.05;pointer-events:none;
+    }
+    .hero-card>*{position:relative;z-index:1;}
+    .app-logo{
+      width:90px;height:90px;border-radius:20px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:42px;box-shadow:0 0 30px var(--glow);
+    }
+    .hero-info{flex:1;min-width:220px;}
+    .hero-info h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center;}
+    .badge{font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:7px;display:inline-flex;align-items:center;gap:4px;}
+    .badge-version{background:var(--badge-bg);color:var(--badge-text);}
+    .badge-date{background:var(--surface2);color:var(--text-muted);}
+    .tag{font-size:0.73rem;font-weight:600;background:var(--tag-bg);color:var(--tag-text);border-radius:6px;padding:3px 9px;}
+    .hero-desc{font-size:0.95rem;color:var(--text-muted);line-height:1.7;max-width:580px;}
+
+    /* Tabs */
+    .tabs{display:flex;gap:4px;margin-bottom:32px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:5px;}
+    .tab-btn{flex:1;padding:10px 0;font-size:0.9rem;font-weight:600;border:none;border-radius:9px;cursor:pointer;background:transparent;color:var(--text-muted);transition:all var(--transition);font-family:'Inter',sans-serif;}
+    .tab-btn.active{background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;box-shadow:0 0 18px var(--glow);}
+    .tab-btn:hover:not(.active){background:var(--surface2);color:var(--text);}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;animation:fadeUp 0.4s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+    /* Content blocks */
+    .section-title{font-size:1.2rem;font-weight:700;margin:32px 0 14px;display:flex;align-items:center;gap:10px;}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+    p{font-size:0.95rem;color:var(--text-muted);line-height:1.8;margin-bottom:16px;}
+    ul,ol{padding-left:20px;margin-bottom:16px;}
+    li{font-size:0.95rem;color:var(--text-muted);line-height:1.9;}
+    li strong{color:var(--text);}
+
+    /* Feature grid */
+    .feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:28px;}
+    .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all var(--transition);}
+    .feature-card:hover{border-color:var(--accent);box-shadow:0 0 20px var(--glow);}
+    .feature-icon{font-size:1.8rem;margin-bottom:10px;}
+    .feature-title{font-size:0.92rem;font-weight:700;margin-bottom:6px;}
+    .feature-desc{font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+
+    /* Screenshot block */
+    .screenshot-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:28px;}
+    .screenshot-block img{width:100%;display:block;border-radius:var(--radius) var(--radius) 0 0;}
+    .screenshot-placeholder{
+      width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--surface2),var(--bg2));
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      color:var(--text-muted);font-size:0.9rem;gap:10px;border-radius:var(--radius) var(--radius) 0 0;
+    }
+    .screenshot-placeholder .ph-icon{font-size:3rem;opacity:0.4;}
+    .screenshot-caption{padding:14px 18px;font-size:0.82rem;color:var(--text-muted);border-top:1px solid var(--border);}
+
+    /* Step */
+    .step{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start;}
+    .step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-size:0.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 14px var(--glow);}
+    .step-body{flex:1;}
+    .step-title{font-size:0.95rem;font-weight:700;margin-bottom:6px;}
+    .step-desc{font-size:0.88rem;color:var(--text-muted);line-height:1.7;}
+
+    /* Code */
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;font-family:monospace;font-size:0.85rem;color:var(--accent2);overflow-x:auto;margin-bottom:20px;line-height:1.7;}
+
+    /* Release timeline */
+    .release{border-left:2px solid var(--border);padding-left:24px;margin-bottom:32px;position:relative;}
+    .release::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--accent);position:absolute;left:-7px;top:6px;box-shadow:0 0 10px var(--glow);}
+    .release-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+    .release-version{font-size:1rem;font-weight:700;}
+    .release-date{font-size:0.78rem;color:var(--text-muted);}
+    .release-badge{font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;}
+    .rb-new{background:rgba(34,197,94,0.15);color:#4ade80;}
+    .rb-fix{background:rgba(251,146,60,0.15);color:#fb923c;}
+    .rb-improve{background:rgba(6,182,212,0.15);color:#67e8f9;}
+    .release-list{list-style:none;padding:0;}
+    .release-list li{font-size:0.88rem;color:var(--text-muted);padding:5px 0;display:flex;gap:8px;align-items:flex-start;}
+    .release-list li::before{content:'▸';color:var(--accent2);flex-shrink:0;}
+
+    /* Alert */
+    .alert{border-radius:12px;padding:16px 18px;font-size:0.88rem;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;border:1px solid;}
+    .alert-icon{font-size:1.1rem;flex-shrink:0;}
+    .alert-info{background:rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.25);color:var(--text-muted);}
+    .alert-warn{background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.25);color:var(--text-muted);}
+
+    footer{text-align:center;padding:40px 0 0;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.82rem;}
+    @media(max-width:600px){.hero-card{flex-direction:column;}.app-logo{width:70px;height:70px;font-size:32px;}}
+  </style>
+</head>
+<body>
+
+<div class="bg-orbs"><span></span><span></span></div>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <header>
+    <a class="back-btn" href="index.html">← Back to Hub</a>
+    <button id="theme-toggle" onclick="toggleTheme()">
+      <span class="icon" id="theme-icon">🌙</span>
+      <span id="theme-label">Dark Mode</span>
+    </button>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       ✦ HERO CARD — Edit everything here
+  ══════════════════════════════════════════════ -->
+  <div class="hero-card">
+    <!-- App logo: use an emoji OR replace with <img src="logo.png" style="width:90px;border-radius:20px"> -->
+    <div class="app-logo" style="background:linear-gradient(135deg,#7c3aed,#06b6d4)">
+      📊
+    </div>
+    <div class="hero-info">
+      <h1>POS Dashboard</h1>
+      <div class="hero-meta">
+        <span class="badge badge-version">🔖 Odoo 18.0</span>
+        <span class="badge badge-date">📅 May 2026</span>
+        <span class="tag">Dashboard</span>
+        <span class="tag">KPI</span>
+        <span class="tag">Analytics</span>
+      </div>
+      <p class="hero-desc">
+        Advanced analytics dashboard for Point of Sale — real-time KPIs, top products, session summaries and multi-currency support.
+      </p>
+    </div>
+  </div>
+  <!-- ══════════════════════════════════════════════ -->
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('overview',this)">📋 Overview</button>
+    <button class="tab-btn" onclick="showTab('setup',this)">⚙️ Setup</button>
+    <button class="tab-btn" onclick="showTab('releases',this)">🚀 Releases</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 1 — OVERVIEW
+  ══════════════════════════════════════════════ -->
+  <div id="tab-overview" class="tab-panel active">
+
+    <div class="section-title">📌 About This Module</div>
+    <p>
+      The <strong>POS Dashboard</strong> module extends the Odoo Point of Sale with a rich analytics interface. It aggregates session data and presents actionable KPIs directly inside the POS screen, helping managers make faster decisions.
+    </p>
+    <p>
+      This module is compatible with <strong>Odoo 18.0</strong> and requires no external dependencies.
+    </p>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">ℹ️</span>
+      <span>This module does not modify any core Odoo models. It uses computed fields and SQL queries for performance.</span>
+    </div>
+
+    <div class="section-title">✨ Key Features</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <div class="feature-title">Real-time KPIs</div>
+        <div class="feature-desc">Total sales, unique products, average order value — updated live during POS sessions.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Top Products</div>
+        <div class="feature-desc">Ranks best-selling items by quantity and revenue with filtering by date range.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💱</div>
+        <div class="feature-title">Multi-Currency</div>
+        <div class="feature-desc">Displays sales broken down by currency with live exchange rate support.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗂️</div>
+        <div class="feature-title">Session Summary</div>
+        <div class="feature-desc">Per-session breakdown of payments, discounts and cashier performance.</div>
+      </div>
+    </div>
+
+    <div class="section-title">🖥️ Screenshots</div>
+
+    <div class="screenshot-block">
+      <!-- Replace with: <img src="screenshots/dashboard-main.png" alt="Dashboard main view"> -->
+      <div class="screenshot-placeholder">
+        <span class="ph-icon">🖼️</span>
+        <span>Replace with: &lt;img src="screenshots/dashboard-main.png"&gt;</span>
+      </div>
+      <div class="screenshot-caption">📸 Main dashboard view showing KPIs and top products</div>
+    </div>
+
+    <div class="screenshot-block">
+      <div class="screenshot-placeholder">
+        <span class="ph-icon">🖼️</span>
+        <span>Replace with: &lt;img src="screenshots/session-summary.png"&gt;</span>
+      </div>
+      <div class="screenshot-caption">📸 Session summary popup</div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 2 — SETUP
+  ══════════════════════════════════════════════ -->
+  <div id="tab-setup" class="tab-panel">
+
+    <div class="section-title">📦 Installation</div>
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <span>Make sure you are running <strong>Odoo 18.0</strong> before installing this module.</span>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Copy the module to your addons path</div>
+        <div class="step-desc">Place the <code>pos_dashboard</code> folder inside your custom addons directory.</div>
+        <div class="code-block">cp -r pos_dashboard /path/to/odoo/custom-addons/</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Update the addons list</div>
+        <div class="step-desc">Go to <strong>Settings → Activate Developer Mode</strong>, then <strong>Apps → Update Apps List</strong>.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Install the module</div>
+        <div class="step-desc">Search for <strong>"POS Dashboard"</strong> in the Apps menu and click <strong>Install</strong>.</div>
+        <div class="screenshot-block">
+          <div class="screenshot-placeholder">
+            <span class="ph-icon">🖼️</span>
+            <span>Replace with: &lt;img src="screenshots/install-step.png"&gt;</span>
+          </div>
+          <div class="screenshot-caption">📸 Module install screen</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Configure POS Settings</div>
+        <div class="step-desc">Navigate to <strong>Point of Sale → Configuration → Settings</strong> and enable the Dashboard option under the Analytics section.</div>
+      </div>
+    </div>
+
+    <div class="section-title">⚙️ Configuration Options</div>
+    <ul>
+      <li><strong>Date Range Filter</strong> — Set default date range shown on dashboard (Today / Week / Month).</li>
+      <li><strong>Top N Products</strong> — Choose how many top products to display (default: 10).</li>
+      <li><strong>Exclude Discounts</strong> — Toggle whether discount products appear in product counts.</li>
+      <li><strong>Currency Display</strong> — Show amounts in company currency or original payment currency.</li>
+    </ul>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 3 — RELEASES
+  ══════════════════════════════════════════════ -->
+  <div id="tab-releases" class="tab-panel">
+
+    <div class="section-title">📋 Changelog</div>
+
+    <div class="release">
+      <div class="release-header">
+        <span class="release-version">v1.2.0</span>
+        <span class="release-date">May 14, 2026</span>
+        <span class="release-badge rb-new">Latest</span>
+      </div>
+      <ul class="release-list">
+        <li>Fixed product count discrepancy between unique products and top products list</li>
+        <li>Excluded e-wallet and discount products from total_items KPI</li>
+        <li>Added consistent filtering logic across get_dashboard_kpi and get_top_products</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
+        <span class="release-version">v1.1.0</span>
+        <span class="release-date">Apr 30, 2026</span>
+        <span class="release-badge rb-improve">Improvement</span>
+      </div>
+      <ul class="release-list">
+        <li>Added multi-currency breakdown to session summary</li>
+        <li>Exchange rate now shown in Closing Register popup</li>
+        <li>Improved dashboard load performance with optimised SQL</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
+        <span class="release-version">v1.0.0</span>
+        <span class="release-date">Apr 1, 2026</span>
+        <span class="release-badge rb-fix">Initial</span>
+      </div>
+      <ul class="release-list">
+        <li>Initial release for Odoo 18.0</li>
+        <li>Real-time KPI cards: total sales, items, unique products</li>
+        <li>Top products ranking with date range filter</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Odoo Docs Hub · <a href="index.html">← All Modules</a></p>
+  </footer>
+
+</div>
+
+<script>
+  /* Tab switcher */
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* Theme toggle */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-icon').textContent  = isDark ? '☀️' : '🌙';
+    document.getElementById('theme-label').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+
+  /* Restore saved theme */
+  (function(){
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('theme-icon').textContent  = saved === 'dark' ? '🌙' : '☀️';
+    document.getElementById('theme-label').textContent = saved === 'dark' ? 'Dark Mode' : 'Light Mode';
+  })();
+</script>
+</body>
+</html>
